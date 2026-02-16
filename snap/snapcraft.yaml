@@ -1,0 +1,426 @@
+name: rzv-ai-sdk-collection
+base: core24
+version: '1.0'
+summary: Renesas RZ/V AI SDK Examples (V2L, cross-compiled)
+description: |
+  Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2L.
+  TVM runtime is staged from renesas-rz/rzv_drp-ai_tvm.
+
+grade: devel
+confinement: devmode
+
+platforms:
+  arm64:
+    build-on: [amd64]
+    build-for: [arm64]
+
+lint:
+  ignore:
+    - library
+
+package-repositories:
+  - type: apt
+    architectures: [$CRAFT_ARCH_BUILD_FOR]
+    formats: [deb, deb-src]
+    components: [main, universe]
+    suites: [noble, noble-updates, noble-backports]
+    key-id: F6ECB3762474EDA9D21B7022871920D1991BC93C
+    url: http://ports.ubuntu.com/ubuntu-ports
+
+  - type: apt
+    architectures: [$CRAFT_ARCH_BUILD_FOR]
+    formats: [deb, deb-src]
+    components: [main]
+    suites: [noble]
+    key-id: 1E72A68F43DA1C8E4BB7B59356451E45B00B4CB5
+    url: http://ppa.launchpad.net/ubuntu-on-renesas/public-ppa/ubuntu
+
+parts:
+  tvm-runtime:
+    plugin: nil
+    source: https://github.com/renesas-rz/rzv_drp-ai_tvm.git
+    source-type: git
+    override-build: |
+      set -eux
+      ls -l $CRAFT_PART_SRC
+      mkdir -p "$CRAFT_PART_INSTALL/usr/local/tvm"
+      cp -a $CRAFT_PART_SRC/* $CRAFT_PART_INSTALL/usr/local/tvm/
+      
+      # Follow Renesas Dockerfile setup   
+      cp -a $CRAFT_PART_INSTALL/usr/local/tvm/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
+
+      # Workaround without the libc header from kernel 
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
+      cp ${CRAFT_PROJECT_DIR}/drpai.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
+
+    override-prime: |
+      craftctl default
+      mkdir -p $CRAFT_PRIME/usr/lib/
+      # Install runtime library
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PRIME/usr/lib/
+
+  rz-ai-sdk-src:
+    after: [tvm-runtime]
+    plugin: nil
+    source: https://github.com/renesas-rz/rzv_ai_sdk.git
+    source-type: git
+    override-pull: |
+      craftctl default
+      # Patch CMakefiles for correct TVM run time library and add install support
+      git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
+
+  q01-footfall-counter:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q01
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
+      craftctl default
+
+  q02-face-authentication:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q02_face_authentication/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q02
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q02_face_authentication/exe_v2l/* $CRAFT_PART_INSTALL/usr/q02/bin/
+      craftctl default
+
+  q04-fish-classification:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q04_fish_classification/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q04
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q04_fish_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q04/bin/
+      craftctl default
+
+  q05-suspicious-activity:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q05_suspicious_activity/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q05
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q05_suspicious_activity/exe_v2l/* $CRAFT_PART_INSTALL/usr/q05/bin/
+      craftctl default
+
+  q06-expiry-date-detection:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q06
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+      - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR 
+      - libboost1.83-dev:$CRAFT_ARCH_BUILD_FOR 
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q06/bin/
+      craftctl default
+
+  q07-plant-disease-classification:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q07_plant_disease_classification/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q07
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q07_plant_disease_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q07/bin/
+      craftctl default
+
+  q08-object-counter:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q08
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
+      craftctl default
+
+  q09-crack-segmentation:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q09_crack_segmentation/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q09
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q09_crack_segmentation/exe_v2l/* $CRAFT_PART_INSTALL/usr/q09/bin/
+      craftctl default
+
+  q10-suspicious-person-detection:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q10_suspicious_person_detection/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q10
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q10_suspicious_person_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q10/bin/
+      craftctl default
+
+  q11-fish-detection:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q11_fish_detection/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/q11
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q11_fish_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q11/bin/
+      craftctl default
+
+  r01-object-detection:
+    after: [rz-ai-sdk-src]
+    plugin: cmake
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/src
+    source-type: local
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr/r01
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+    build-environment:
+      - PRODUCT: V2L
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - cmake
+      - ninja-build
+      - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
+      - libegl-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgles-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+      - linux-libc-dev-renesas
+    override-stage: |
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
+      craftctl default
+
+apps:
+  object-tracker:
+    command: usr/q01/bin/object_tracker
+    plugs: [camera, opengl, wayland]
+
+  face-recognition:
+    command: usr/q02/bin/face_recognition
+    plugs: [camera, opengl, wayland]
+
+  fish-classification:
+    command: usr/q04/bin/fish_classification
+    plugs: [camera, opengl, wayland]
+
+  suspicious-activity:
+    command: usr/q05/bin/suspicious_activity
+    plugs: [camera, opengl, wayland]
+
+  expiry-date-extraction:
+    command: usr/q06/bin/date_extraction
+    plugs: [camera, opengl, wayland]
+
+  plant-leaf-disease-classify:
+    command: usr/q07/bin/plant_leaf_disease_classify
+    plugs: [camera, opengl, wayland]
+
+  object-counter:
+    command: usr/q08/bin/object_counter
+    plugs: [camera, opengl, wayland]
+
+  crack-segmentation:
+    command: usr/q09/bin/crack_segmentation
+    plugs: [camera, opengl, wayland]
+
+  suspicious-person-detector:
+    command: usr/q10/bin/suspicious_person_detector
+    plugs: [camera, opengl, wayland]
+
+  fish-detector:
+    command: usr/q11/bin/fish_detector
+    plugs: [camera, opengl, wayland]
+
+  object-detection:
+    command: usr/r01/bin/object_detection
+    plugs: [camera, opengl, wayland]
