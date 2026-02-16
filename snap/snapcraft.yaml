@@ -93,7 +93,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
 
@@ -121,7 +122,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q02/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q02_face_authentication/exe_v2l/* $CRAFT_PART_INSTALL/usr/q02/bin/
       craftctl default
 
@@ -149,7 +151,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q04/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q04_fish_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q04/bin/
       craftctl default
 
@@ -177,7 +180,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q05/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q05_suspicious_activity/exe_v2l/* $CRAFT_PART_INSTALL/usr/q05/bin/
       craftctl default
 
@@ -207,7 +211,8 @@ parts:
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
       - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR 
       - libboost1.83-dev:$CRAFT_ARCH_BUILD_FOR 
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q06/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q06/bin/
       craftctl default
 
@@ -235,7 +240,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q07/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q07_plant_disease_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q07/bin/
       craftctl default
 
@@ -263,7 +269,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
 
@@ -291,7 +298,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q09/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q09_crack_segmentation/exe_v2l/* $CRAFT_PART_INSTALL/usr/q09/bin/
       craftctl default
 
@@ -319,7 +327,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q10/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q10_suspicious_person_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q10/bin/
       craftctl default
 
@@ -347,7 +356,8 @@ parts:
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/q11/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q11_fish_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q11/bin/
       craftctl default
 
@@ -376,7 +386,8 @@ parts:
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
       - linux-libc-dev-renesas
-    override-stage: |
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
 
