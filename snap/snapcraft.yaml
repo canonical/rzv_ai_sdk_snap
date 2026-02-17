@@ -14,10 +14,6 @@ platforms:
     build-on: [amd64,arm64]
     build-for: [arm64]
 
-lint:
-  ignore:
-    - library
-
 package-repositories:
   - type: apt
     architectures: [$CRAFT_ARCH_BUILD_FOR]
@@ -44,10 +40,14 @@ parts:
       set -eux
       ls -l $CRAFT_PART_SRC
       mkdir -p "$CRAFT_PART_INSTALL/usr/local/tvm"
-      cp -a $CRAFT_PART_SRC/* $CRAFT_PART_INSTALL/usr/local/tvm/
+      cp -a $CRAFT_PART_SRC/tvm $CRAFT_PART_INSTALL/usr/local/tvm/
       
       # Follow Renesas Dockerfile setup   
-      cp -a $CRAFT_PART_INSTALL/usr/local/tvm/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
+      cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
+      
+      # Copy to TVM folder to match with CMakefiles  
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
 
       # Workaround without the libc header from kernel 
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
@@ -68,6 +68,18 @@ parts:
       craftctl default
       # Patch CMakefiles for correct TVM run time library and add install support
       git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
+    stage-packages:
+      - libmmngr1:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-video406t64:$CRAFT_ARCH_BUILD_FOR 
+      - libopencv-highgui406t64:$CRAFT_ARCH_BUILD_FOR 
+      - libopencv-imgproc406t64:$CRAFT_ARCH_BUILD_FOR 
+      - libopencv-imgcodecs406t64:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-videoio406t64:$CRAFT_ARCH_BUILD_FOR
+      - libwayland-egl1:$CRAFT_ARCH_BUILD_FOR
+      - libgles2:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-contrib406t64:$CRAFT_ARCH_BUILD_FOR 
+      - libtesseract5:$CRAFT_ARCH_BUILD_FOR 
 
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
@@ -207,10 +219,10 @@ parts:
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
-      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
-      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
       - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR 
       - libboost1.83-dev:$CRAFT_ARCH_BUILD_FOR 
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/usr/q06/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q06/bin/
@@ -394,44 +406,66 @@ parts:
 apps:
   object-tracker:
     command: usr/q01/bin/object_tracker
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   face-recognition:
     command: usr/q02/bin/face_recognition
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   fish-classification:
     command: usr/q04/bin/fish_classification
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   suspicious-activity:
     command: usr/q05/bin/suspicious_activity
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   expiry-date-extraction:
     command: usr/q06/bin/date_extraction
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   plant-leaf-disease-classify:
     command: usr/q07/bin/plant_leaf_disease_classify
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   object-counter:
     command: usr/q08/bin/object_counter
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   crack-segmentation:
     command: usr/q09/bin/crack_segmentation
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   suspicious-person-detector:
     command: usr/q10/bin/suspicious_person_detector
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   fish-detector:
     command: usr/q11/bin/fish_detector
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
 
   object-detection:
     command: usr/r01/bin/object_detection
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
     plugs: [camera, opengl, wayland]
