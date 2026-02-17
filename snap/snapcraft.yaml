@@ -11,8 +11,12 @@ confinement: devmode
 
 platforms:
   arm64:
-    build-on: [arm64]
+    build-on: [amd64,arm64]
     build-for: [arm64]
+
+lint:
+  ignore:
+    - library
 
 package-repositories:
   - type: apt
@@ -72,6 +76,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q01
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -79,6 +85,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -97,6 +105,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q02
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -104,6 +114,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -122,6 +134,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q04
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -129,6 +143,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -147,6 +163,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q05
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -154,6 +172,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -172,6 +192,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q06
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -179,6 +201,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -199,6 +223,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q07
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -206,6 +232,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -224,6 +252,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q08
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -231,6 +261,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -249,6 +281,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q09
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -256,6 +290,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -274,6 +310,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q10
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -281,6 +319,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -299,6 +339,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q11
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -306,6 +348,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
@@ -324,6 +368,8 @@ parts:
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/r01
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -331,6 +377,8 @@ parts:
       - cmake
       - ninja-build
       - pkg-config
+      - gcc-aarch64-linux-gnu
+      - g++-aarch64-linux-gnu
       - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libegl-dev:$CRAFT_ARCH_BUILD_FOR
