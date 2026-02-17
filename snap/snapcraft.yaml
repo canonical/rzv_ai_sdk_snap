@@ -14,10 +14,6 @@ platforms:
     build-on: [arm64]
     build-for: [arm64]
 
-lint:
-  ignore:
-    - library
-
 package-repositories:
   - type: apt
     architectures: [$CRAFT_ARCH_BUILD_FOR]
