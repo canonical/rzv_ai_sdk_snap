@@ -1,0 +1,25 @@
+From 41c8dbbd60b4217fd8e27b1c97f26cb143665146 Mon Sep 17 00:00:00 2001
+From: Asal Mirzaieva <asa.mirzaieva@canonical.com>
+Date: Wed, 18 Feb 2026 12:00:09 +0100
+Subject: [PATCH] Remove MIPI camera config
+
+---
+ Q01_footfall_counter/src/main.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Q01_footfall_counter/src/main.cpp b/Q01_footfall_counter/src/main.cpp
+index b27937d..7d726f0 100644
+--- a/Q01_footfall_counter/src/main.cpp
++++ b/Q01_footfall_counter/src/main.cpp
+@@ -1371,7 +1371,7 @@ int32_t main(int32_t argc, char * argv[])
+         case 2:
+         {
+             std::cout << "[INFO] MIPI CAMERA \n";
+-            mipi_cam_init();
++            //mipi_cam_init();
+             std::string media_port = query_device_status("CRU");
+             gstreamer_pipeline = "v4l2src device=" + media_port + " ! videoconvert ! appsink";
+ 
+-- 
+2.43.0
+

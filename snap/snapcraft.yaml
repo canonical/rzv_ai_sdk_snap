@@ -91,6 +91,7 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr/q01
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+      - -DCMAKE_BUILD_TYPE=Debug
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -107,8 +108,8 @@ parts:
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
     override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
+      #mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
+      #cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
 
   q02-face-authentication:
