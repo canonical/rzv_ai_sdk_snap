@@ -68,6 +68,7 @@ parts:
       craftctl default
       # Patch CMakefiles for correct TVM run time library and add install support
       git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
+      git apply -v ${CRAFT_PROJECT_DIR}/0001-Remove-MIPI-camera-config.patch
     stage-packages:
       - libmmngr1:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
