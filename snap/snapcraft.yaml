@@ -407,65 +407,65 @@ apps:
   object-tracker:
     command: usr/q01/bin/object_tracker
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   face-recognition:
     command: usr/q02/bin/face_recognition
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   fish-classification:
     command: usr/q04/bin/fish_classification
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   suspicious-activity:
     command: usr/q05/bin/suspicious_activity
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   expiry-date-extraction:
     command: usr/q06/bin/date_extraction
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   plant-leaf-disease-classify:
     command: usr/q07/bin/plant_leaf_disease_classify
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   object-counter:
     command: usr/q08/bin/object_counter
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   crack-segmentation:
     command: usr/q09/bin/crack_segmentation
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   suspicious-person-detector:
     command: usr/q10/bin/suspicious_person_detector
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   fish-detector:
     command: usr/q11/bin/fish_detector
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
 
   object-detection:
     command: usr/r01/bin/object_detection
     environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
     plugs: [camera, opengl, wayland]
