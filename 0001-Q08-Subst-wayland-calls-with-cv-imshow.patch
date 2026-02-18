@@ -1,0 +1,45 @@
+From cb913db4eece1a1c7c3dd99bf32051403aed62d7 Mon Sep 17 00:00:00 2001
+From: Asal Mirzaieva <asa.mirzaieva@canonical.com>
+Date: Wed, 25 Feb 2026 09:22:47 +0100
+Subject: [PATCH] Q08: Subst wayland calls with cv::imshow()
+
+Old code used deprecated wl_shell()
+---
+ Q08_object_counter/src/main.cpp | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/Q08_object_counter/src/main.cpp b/Q08_object_counter/src/main.cpp
+index 2af0fb5..2fe2cb3 100755
+--- a/Q08_object_counter/src/main.cpp
++++ b/Q08_object_counter/src/main.cpp
+@@ -1031,7 +1031,9 @@ int8_t R_Main_Process()
+             cv::putText(bgra_image, "Total Objects:  " + std::to_string(total_count), cv::Point(DISP_IMAGE_OUTPUT_WIDTH + 20, 150),
+                         cv::FONT_HERSHEY_DUPLEX, font_size, cv::Scalar(255, 255, 255), font_weight);
+             cv::cvtColor(bgra_image, bgra_image, cv::COLOR_BGR2BGRA);
+-            wayland.commit(bgra_image.data, NULL);
++            cv::imshow("Object Counter", bgra_image);
++            cv::waitKey(1);
++            //wayland.commit(bgra_image.data, NULL);
+             img_obj_ready.store(0);
+         }
+ 
+@@ -1346,13 +1348,9 @@ int32_t main(int32_t argc, char *argv[])
+         ini_values = config_values[mode];
+     }
+ 
+-    /* Initialize waylad */
+-    ret_w = wayland.init(DISP_OUTPUT_WIDTH, DISP_OUTPUT_HEIGHT, IMAGE_CHANNEL_BGRA);
+-    if (0 != ret_w)
+-    {
+-        fprintf(stderr, "[ERROR] Failed to initialize Image for Wayland\n");
+-        return -1;
+-    }
++    // Remove initialize wayland due to error:
++    // [ERROR] Failed to initialize Image for Wayland: -1
++    // App uses depreated shell interface instead of modern xdg_wm_base
+ 
+     switch (input_source_map[input_source])
+     {
+-- 
+2.43.0
+

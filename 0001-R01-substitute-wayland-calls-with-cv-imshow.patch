@@ -1,0 +1,84 @@
+From 369156251ac0b8a72cbeefb12a0de47e0a58cfe1 Mon Sep 17 00:00:00 2001
+From: Asal Mirzaieva <asa.mirzaieva@canonical.com>
+Date: Wed, 25 Feb 2026 09:20:45 +0100
+Subject: [PATCH] R01: substitute wayland calls with cv::imshow()
+
+Old code used deprecated wl_shell(), let's use cv::imshow() as quick fix.
+---
+ R01_object_detection/src/main.cpp | 42 +++----------------------------
+ 1 file changed, 3 insertions(+), 39 deletions(-)
+
+diff --git a/R01_object_detection/src/main.cpp b/R01_object_detection/src/main.cpp
+index 44988ae..ec2868e 100755
+--- a/R01_object_detection/src/main.cpp
++++ b/R01_object_detection/src/main.cpp
+@@ -1058,39 +1058,9 @@ void *R_Display_Thread(void *threadid)
+     /*Variable for checking return value*/
+     int8_t ret = 0;
+     /* Initialize waylad */
+-    ret = wayland.init(IMAGE_OUTPUT_WIDTH, IMAGE_OUTPUT_HEIGHT, IMAGE_OUTPUT_CHANNEL_BGRA);
+-    if(0 != ret)
+-    {
+-        fprintf(stderr, "[ERROR] Failed to initialize Image for Wayland\n");
+-        goto err;
+-    }
+-    printf("Display Thread Starting\n");
+     while(1)
+     {
+-        /*Gets The Termination Request Semaphore Value, If Different Then 1 Termination Is Requested*/
+-        /*Checks If sem_getvalue Is Executed Without Issue*/
+-        errno = 0;
+-        ret = sem_getvalue(&terminate_req_sem, &hdmi_sem_check);
+-        if (0 != ret)
+-        {
+-            fprintf(stderr, "[ERROR] Failed to get Semaphore Value: errno=%d\n", errno);
+-            goto err;
+-        }
+-        /*Checks the semaphore value*/
+-        if (1 != hdmi_sem_check)
+-        {
+-            goto hdmi_end;
+-        }
+-        /* Check hdmi_obj_ready flag which is set in Capture Thread. */
+-        if (hdmi_obj_ready.load())
+-        {
+-            /*Update Wayland*/
+-            display_image = proc_image;
+-            cv::cvtColor(display_image, display_image, cv::COLOR_BGR2BGRA);
+-            wayland.commit(display_image.data, NULL);
+-            hdmi_obj_ready.store(0);
+-        }
+-        usleep(WAIT_TIME); //wait 1 tick timedg
++        usleep(1); //wait 1 tick timedg
+     } /*End Of Loop*/
+ 
+ /*Error Processing*/
+@@ -1197,12 +1167,6 @@ int8_t R_Main_Process()
+ 
+     #ifndef V2H /* for V2L */
+     /* Initialize waylad */
+-    ret = wayland.init(IMAGE_OUTPUT_WIDTH, IMAGE_OUTPUT_HEIGHT, IMAGE_OUTPUT_CHANNEL_BGRA);
+-    if(0 != ret)
+-    {
+-        fprintf(stderr, "[ERROR] Failed to initialize Image for Wayland\n");
+-        goto err;
+-    }
+     #endif      /*  for V2L */
+ 
+     printf("Main Loop Starts\n");
+@@ -1244,10 +1208,10 @@ int8_t R_Main_Process()
+             /*Displays AI Inference Results on display.*/
+             display_image = img.get_mat().clone(); 
+             print_result(&img, display_image);
++            cv::imshow("Object detection", display_image);
++            cv::waitKey(1);
+ 
+             /*Update Wayland*/
+-            cv::cvtColor(display_image, display_image, cv::COLOR_BGR2BGRA);
+-            wayland.commit(display_image.data, NULL);
+             img_obj_ready.store(0);
+             
+             #ifdef DEBUG_TIME_FLG
+-- 
+2.43.0
+

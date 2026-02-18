@@ -71,6 +71,10 @@ parts:
       craftctl default
       # Patch CMakefiles for correct TVM run time library and add install support
       git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
+      # Patches fix the camera config issue and gstreamer pipeline
+      git apply -v ${CRAFT_PROJECT_DIR}/0001-Q01-Make-camera-and-inferencing-work.patch
+      git apply -v ${CRAFT_PROJECT_DIR}/0001-Q08-Fix-camera-config-and-gstreamer-pipeline.patch
+      git apply -v ${CRAFT_PROJECT_DIR}/0001-R01-Fix-camera-config-and-gstreamer-pipeline.patch
     build-packages:
       - cmake
       - ninja-build
