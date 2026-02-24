@@ -7,7 +7,7 @@ the Renesas RZ/V2L platform.
 ## Overview
 
 This repository provides the build configuration to package RZ/V AI SDK
-examples as a [snap](https://snapcraft.io/). The snap is cross-compiled for
+examples as a [snap](https://snapcraft.io/). The snap is compiled/cross-compiled for
 `arm64` (AArch64) and targets devices running Ubuntu on the Renesas RZ/V2L
 SoC. The DRP-AI TVM runtime is sourced from
 [renesas-rz/rzv_drp-ai_tvm](https://github.com/renesas-rz/rzv_drp-ai_tvm).
@@ -32,12 +32,11 @@ SoC. The DRP-AI TVM runtime is sourced from
 
 - Renesas RZ/V2L board running Ubuntu (noble / 24.04)
 - Camera connected to the board
-- Wayland compositor
 
 ## Building
 
 The snap is built with [Snapcraft](https://snapcraft.io/docs/snapcraft-overview)
-and cross-compiled from an `amd64` or `arm64` host:
+and compiled/cross-compiled from an `amd64` or `arm64` host:
 
 ```bash
 snapcraft --build-for arm64
@@ -61,8 +60,6 @@ Run any of the included applications using its snap command. For example:
 rzv-ai-sdk-collection.object-detection
 ```
 
-All applications require access to a camera, an OpenGL-capable GPU, and a
-Wayland display server.
 
 ## License
 
