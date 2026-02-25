@@ -120,6 +120,7 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr/q01
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+      - -DCMAKE_BUILD_TYPE=Debug
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
