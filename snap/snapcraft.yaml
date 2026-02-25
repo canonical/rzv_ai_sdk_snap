@@ -31,6 +31,12 @@ package-repositories:
     key-id: 1E72A68F43DA1C8E4BB7B59356451E45B00B4CB5
     url: http://ppa.launchpad.net/ubuntu-on-renesas/public-ppa/ubuntu
 
+plugs:
+  gpu-2404:
+    interface: content
+    target: $SNAP/gpu-2404
+    default-provider: mesa-2404
+
 parts:
   tvm-runtime:
     plugin: nil
