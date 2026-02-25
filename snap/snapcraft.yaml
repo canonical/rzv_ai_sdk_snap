@@ -108,6 +108,8 @@ parts:
       - libtesseract5:$CRAFT_ARCH_BUILD_FOR
       - v4l-utils:$CRAFT_ARCH_BUILD_FOR
       - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
+      - qtwayland5:$CRAFT_ARCH_BUILD_FOR
+      - libqt5waylandclient5:$CRAFT_ARCH_BUILD_FOR
 
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
