@@ -67,10 +67,12 @@ parts:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
+    source-tag: v6.20
     override-pull: |
       craftctl default
       # Patch CMakefiles for correct TVM run time library and add install support
       git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
+      git apply -v ${CRAFT_PROJECT_DIR}/cam_gst.patch
     build-packages:
       - cmake
       - ninja-build
@@ -103,6 +105,8 @@ parts:
       - libopencv-contrib406t64:$CRAFT_ARCH_BUILD_FOR
       - libtesseract5:$CRAFT_ARCH_BUILD_FOR
       - v4l-utils:$CRAFT_ARCH_BUILD_FOR
+      - qtwayland5:$CRAFT_ARCH_BUILD_FOR
+      - xkb-data:$CRAFT_ARCH_BUILD_FOR
       - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
 
   q01-footfall-counter:
@@ -121,6 +125,9 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
+    override-prime: |
+      craftctl default
+      cp -a ${CRAFT_PROJECT_DIR}/launch-object-tracker.sh $CRAFT_PRIME/usr/q01/bin/
 
   q02-face-authentication:
     after: [rz-ai-sdk-src]
@@ -223,6 +230,9 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
+    override-prime: |
+      craftctl default
+      cp -a ${CRAFT_PROJECT_DIR}/launch-object-counter.sh $CRAFT_PRIME/usr/q08/bin/
 
   q09-crack-segmentation:
     after: [rz-ai-sdk-src]
@@ -291,13 +301,15 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
+    override-prime: |
+      craftctl default
+      cp -a ${CRAFT_PROJECT_DIR}/launch-object-detection.sh $CRAFT_PRIME/usr/r01/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/models/yolov3_onnx/ $CRAFT_PRIME/usr/r01/bin/
 
 apps:
   object-tracker:
-    command: usr/q01/bin/object_tracker
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
+    command: usr/q01/bin/launch-object-tracker.sh
+    plugs: [camera, opengl, wayland, hardware-observe]
 
   face-recognition:
     command: usr/q02/bin/face_recognition
@@ -330,10 +342,8 @@ apps:
     plugs: [camera, opengl, wayland]
 
   object-counter:
-    command: usr/q08/bin/object_counter
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
+    command: usr/q08/bin/launch-object-counter.sh
+    plugs: [camera, opengl, wayland, hardware-observe]
 
   crack-segmentation:
     command: usr/q09/bin/crack_segmentation
@@ -354,7 +364,5 @@ apps:
     plugs: [camera, opengl, wayland]
 
   object-detection:
-    command: usr/r01/bin/object_detection
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
+    command: usr/r01/bin/launch-object-detection.sh
+    plugs: [camera, opengl, wayland, hardware-observe]
