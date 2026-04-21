@@ -129,91 +129,6 @@ parts:
       craftctl default
       cp -a ${CRAFT_PROJECT_DIR}/launch-object-tracker.sh $CRAFT_PRIME/usr/q01/bin/
 
-  q02-face-authentication:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q02_face_authentication/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q02
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q02/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q02_face_authentication/exe_v2l/* $CRAFT_PART_INSTALL/usr/q02/bin/
-      craftctl default
-
-  q04-fish-classification:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q04_fish_classification/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q04
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q04/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q04_fish_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q04/bin/
-      craftctl default
-
-  q05-suspicious-activity:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q05_suspicious_activity/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q05
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q05/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q05_suspicious_activity/exe_v2l/* $CRAFT_PART_INSTALL/usr/q05/bin/
-      craftctl default
-
-  q06-expiry-date-detection:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q06
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q06/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q06_expiry_date_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q06/bin/
-      craftctl default
-
-  q07-plant-disease-classification:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q07_plant_disease_classification/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q07
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q07/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q07_plant_disease_classification/exe_v2l/* $CRAFT_PART_INSTALL/usr/q07/bin/
-      craftctl default
-
   q08-object-counter:
     after: [rz-ai-sdk-src]
     plugin: cmake
@@ -233,57 +148,6 @@ parts:
     override-prime: |
       craftctl default
       cp -a ${CRAFT_PROJECT_DIR}/launch-object-counter.sh $CRAFT_PRIME/usr/q08/bin/
-
-  q09-crack-segmentation:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q09_crack_segmentation/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q09
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q09/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q09_crack_segmentation/exe_v2l/* $CRAFT_PART_INSTALL/usr/q09/bin/
-      craftctl default
-
-  q10-suspicious-person-detection:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q10_suspicious_person_detection/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q10
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q10/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q10_suspicious_person_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q10/bin/
-      craftctl default
-
-  q11-fish-detection:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q11_fish_detection/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/q11
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/q11/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q11_fish_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/q11/bin/
-      craftctl default
 
   r01-object-detection:
     after: [rz-ai-sdk-src]
@@ -311,57 +175,9 @@ apps:
     command: usr/q01/bin/launch-object-tracker.sh
     plugs: [camera, opengl, wayland, hardware-observe]
 
-  face-recognition:
-    command: usr/q02/bin/face_recognition
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  fish-classification:
-    command: usr/q04/bin/fish_classification
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  suspicious-activity:
-    command: usr/q05/bin/suspicious_activity
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  expiry-date-extraction:
-    command: usr/q06/bin/date_extraction
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  plant-leaf-disease-classify:
-    command: usr/q07/bin/plant_leaf_disease_classify
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
   object-counter:
     command: usr/q08/bin/launch-object-counter.sh
     plugs: [camera, opengl, wayland, hardware-observe]
-
-  crack-segmentation:
-    command: usr/q09/bin/crack_segmentation
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  suspicious-person-detector:
-    command: usr/q10/bin/suspicious_person_detector
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
-
-  fish-detector:
-    command: usr/q11/bin/fish_detector
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas
-    plugs: [camera, opengl, wayland]
 
   object-detection:
     command: usr/r01/bin/launch-object-detection.sh
