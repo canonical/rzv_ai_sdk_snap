@@ -154,6 +154,8 @@ parts:
     plugin: cmake
     source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/src
     source-type: local
+    build-packages:
+      - wget
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/r01
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
@@ -161,14 +163,18 @@ parts:
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    override-pull: |
+      craftctl default
+      # object detection model is too large to host on GitHub
+      wget https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v7.00/R01_object_detection_deploy_tvm_v2l-v261.so
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
+      cp -a $CRAFT_PART_SRC/R01_object_detection_deploy_tvm_v2l-v261.so $CRAFT_PART_INSTALL/usr/r01/bin/yolov3_onnx/deploy.so
       craftctl default
     override-prime: |
       craftctl default
       cp -a ${CRAFT_PROJECT_DIR}/launch-object-detection.sh $CRAFT_PRIME/usr/r01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/models/yolov3_onnx/ $CRAFT_PRIME/usr/r01/bin/
 
 apps:
   object-tracker:
