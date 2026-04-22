@@ -109,6 +109,18 @@ parts:
       - xkb-data:$CRAFT_ARCH_BUILD_FOR
       - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
 
+  object-detection-model:
+    after: [r01-object-detection]
+    plugin: nil
+    build-packages:
+      - wget
+    override-pull: |
+      craftctl default
+      wget https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v7.00/R01_object_detection_deploy_tvm_v2l-v261.so
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/yolov3_onnx/
+      cp -a $CRAFT_PART_SRC/R01_object_detection_deploy_tvm_v2l-v261.so $CRAFT_PART_INSTALL/usr/r01/bin/yolov3_onnx/deploy.so
+
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
     plugin: cmake
@@ -154,8 +166,6 @@ parts:
     plugin: cmake
     source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/src
     source-type: local
-    build-packages:
-      - wget
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/r01
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
@@ -163,14 +173,9 @@ parts:
     build-environment:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-pull: |
-      craftctl default
-      # object detection model is too large to host on GitHub
-      wget https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v7.00/R01_object_detection_deploy_tvm_v2l-v261.so
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
-      cp -a $CRAFT_PART_SRC/R01_object_detection_deploy_tvm_v2l-v261.so $CRAFT_PART_INSTALL/usr/r01/bin/yolov3_onnx/deploy.so
       craftctl default
     override-prime: |
       craftctl default
@@ -179,12 +184,36 @@ parts:
 apps:
   object-tracker:
     command: usr/q01/bin/launch-object-tracker.sh
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas:$SNAP/usr/lib/aarch64-linux-gnu/pulseaudio
+      XDG_RUNTIME_DIR: /run/user/1000
+      WAYLAND_DISPLAY: wayland-0
+      QT_QPA_PLATFORM: wayland-egl
+      QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/usr/lib/aarch64-linux-gnu/qt5/plugins
+      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d
     plugs: [camera, opengl, wayland, hardware-observe]
 
   object-counter:
     command: usr/q08/bin/launch-object-counter.sh
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas:$SNAP/usr/lib/aarch64-linux-gnu/pulseaudio
+      XDG_RUNTIME_DIR: /run/user/1000
+      WAYLAND_DISPLAY: wayland-0
+      QT_QPA_PLATFORM: wayland-egl
+      QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/usr/lib/aarch64-linux-gnu/qt5/plugins
+      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d
     plugs: [camera, opengl, wayland, hardware-observe]
 
   object-detection:
     command: usr/r01/bin/launch-object-detection.sh
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas:$SNAP/usr/lib/aarch64-linux-gnu/pulseaudio
+      XDG_RUNTIME_DIR: /run/user/1000
+      WAYLAND_DISPLAY: wayland-0
+      QT_QPA_PLATFORM: wayland-egl
+      QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/usr/lib/aarch64-linux-gnu/qt5/plugins
+      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d
     plugs: [camera, opengl, wayland, hardware-observe]
