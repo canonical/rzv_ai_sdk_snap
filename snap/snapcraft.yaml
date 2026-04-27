@@ -110,6 +110,8 @@ parts:
       - libtesseract5:$CRAFT_ARCH_BUILD_FOR
       - v4l-utils:$CRAFT_ARCH_BUILD_FOR
       - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
+    prime:
+      - -usr/lib/x86_64-linux-gnu
 
   object-detection-model:
     after: [r01-object-detection]
