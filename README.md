@@ -36,6 +36,49 @@ snapcraft pack
 
 > **Note:** The snap is currently set to `grade: devel` and `confinement: devmode`.
 
+## Running the AI Snap Demo
+
+For demonstration purposes, a sample snap is provided that contains three applications from the Renesas AI SDK: object-tracker, object-counter, and object-detection.
+
+Follow these steps to deploy and test the sample snap on your device:
+
+### Step 1: Install and Run Ubuntu Frame
+
+On the RZ/V2L board, install Ubuntu Frame, which serves as a reliable and secure display server for embedded Linux devices.
+
+```bash
+$ sudo snap install ubuntu-frame --channel=24/stable
+```
+
+Next, run Ubuntu Frame on the device. You will notice the Ubuntu Frame interface displayed on your HDMI-connected monitor.
+
+```bash
+$ ubuntu-frame &
+```
+
+### Step 2: Install Required Snaps
+
+If not already installed, install the rz-gpu-snap-core24 snap to enable the GPU capabilities (Mali drivers) on the board.
+
+```bash
+$ sudo snap install --devmode rz-gpu-snap-core24_50p0+20250903_arm64.snap
+```
+
+Then, install the AI SDK collection snap:
+
+```bash
+$ sudo snap install --devmode rzv-ai-sdk-collection_1.0_arm64.snap
+```
+
+### Step 3: Connect Interfaces
+
+Create a connection between the Ubuntu Frame, the newly installed AI snap, and the GPU snap so they can access the necessary hardware capabilities:
+
+```bash
+$ sudo snap connect ubuntu-frame:gpu-2404 rz-gpu-snap-core24
+$ sudo snap connect rzv-ai-sdk-collection:gpu-2404 rz-gpu-snap-core24
+```
+
 ## Installation
 
 Install the locally built snap with:
