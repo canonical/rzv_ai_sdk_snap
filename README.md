@@ -17,8 +17,8 @@ SoC. The DRP-AI TVM runtime is sourced from
 | Snap command | Application | Description |
 |---|---|---|
 | `rzv-ai-sdk-collection.object-detection` | R01 Object Detection | General-purpose object detection |
-| `rzv-ai-sdk-collection.object-tracker` | Q01 Footfall Counter | Counts people passing through a scene using object tracking |
-| `rzv-ai-sdk-collection.face-recognition` | Q02 Face Authentication | Detects and authenticates faces |
+| `rzv-ai-sdk-collection.object-tracker MIPI` | Q01 Footfall Counter | Counts people passing through a scene using object tracking |
+| `rzv-ai-sdk-collection.object-counter <COCO\|animal\|vehicle> MIPI` | Q08 Object Counter | Counts objects in a scene |
 
 ## Requirements
 
@@ -52,6 +52,17 @@ Run any of the included applications using its snap command. For example:
 rzv-ai-sdk-collection.object-detection
 ```
 
+To run the object tracker with MIPI camera support:
+
+```bash
+rzv-ai-sdk-collection.object-tracker MIPI
+```
+
+To run the object counter with a specific model (COCO, animal, or vehicle) and MIPI camera support:
+
+```bash
+rzv-ai-sdk-collection.object-counter COCO MIPI
+```
 
 ## License
 
