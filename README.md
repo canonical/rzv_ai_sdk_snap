@@ -16,17 +16,9 @@ SoC. The DRP-AI TVM runtime is sourced from
 
 | Snap command | Application | Description |
 |---|---|---|
+| `rzv-ai-sdk-collection.object-detection` | R01 Object Detection | General-purpose object detection |
 | `rzv-ai-sdk-collection.object-tracker` | Q01 Footfall Counter | Counts people passing through a scene using object tracking |
 | `rzv-ai-sdk-collection.face-recognition` | Q02 Face Authentication | Detects and authenticates faces |
-| `rzv-ai-sdk-collection.fish-classification` | Q04 Fish Classification | Classifies fish species from camera input |
-| `rzv-ai-sdk-collection.suspicious-activity` | Q05 Suspicious Activity Detection | Detects suspicious activities in a scene |
-| `rzv-ai-sdk-collection.expiry-date-extraction` | Q06 Expiry Date Extraction | Extracts expiry dates from product images using OCR |
-| `rzv-ai-sdk-collection.plant-leaf-disease-classify` | Q07 Plant Leaf Disease Classification | Classifies diseases on plant leaves |
-| `rzv-ai-sdk-collection.object-counter` | Q08 Object Counter | Counts objects in a scene |
-| `rzv-ai-sdk-collection.crack-segmentation` | Q09 Crack Segmentation | Segments and detects cracks in surfaces |
-| `rzv-ai-sdk-collection.suspicious-person-detector` | Q10 Suspicious Person Detection | Detects suspicious persons in a scene |
-| `rzv-ai-sdk-collection.fish-detector` | Q11 Fish Detection | Detects fish in camera input |
-| `rzv-ai-sdk-collection.object-detection` | R01 Object Detection | General-purpose object detection |
 
 ## Requirements
 
