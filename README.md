@@ -31,7 +31,7 @@ The snap is built with [Snapcraft](https://snapcraft.io/docs/snapcraft-overview)
 and compiled/cross-compiled from an `amd64` or `arm64` host:
 
 ```bash
-snapcraft --build-for arm64
+snapcraft pack
 ```
 
 > **Note:** The snap is currently set to `grade: devel` and `confinement: devmode`.
