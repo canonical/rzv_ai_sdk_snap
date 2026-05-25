@@ -41,7 +41,7 @@ snapcraft pack
 Install the locally built snap with:
 
 ```bash
-sudo snap install --devmode rzv-ai-sdk-collection_*.snap
+sudo snap install --devmode rzv-ai-sdk-collection_1.0_arm64.snap
 ```
 
 ## Usage
