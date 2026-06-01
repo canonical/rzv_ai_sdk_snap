@@ -61,7 +61,7 @@ $ ubuntu-frame &
 If not already installed, install the rz-gpu-snap-core24 snap to enable the GPU capabilities (Mali drivers) on the board.
 
 ```bash
-$ sudo snap install --devmode rz-gpu-snap-core24_50p0+20250903_arm64.snap
+$ sudo snap install --devmode rz-gpu-snap-core24 --channel=beta
 ```
 
 Then, install the AI SDK collection snap:
@@ -105,6 +105,36 @@ To run the object counter with a specific model (COCO, animal, or vehicle) and M
 
 ```bash
 rzv-ai-sdk-collection.object-counter COCO MIPI
+```
+
+## Additional Small Snaps
+
+The main `rzv-ai-sdk-collection` snap remains unchanged.
+
+In addition, this repository now includes three smaller snap variants:
+
+- `snap-q01` → `rzv-ai-sdk-q01` (Q01 Footfall Counter)
+- `snap-q08` → `rzv-ai-sdk-q08` (Q08 Object Counter, vehicle model only)
+- `snap-r01` → `rzv-ai-sdk-r01` (R01 Object Detection)
+
+Build one of these snaps from its own directory:
+
+```bash
+cd snap-q01   # or snap-q08 / snap-r01
+snapcraft pack
+```
+
+Install and run examples on target:
+
+```bash
+sudo snap install --devmode rzv-ai-sdk-q01_1.0_arm64.snap
+rzv-ai-sdk-q01.object-tracker MIPI
+
+sudo snap install --devmode rzv-ai-sdk-q08_1.0_arm64.snap
+rzv-ai-sdk-q08.object-counter vehicle MIPI
+
+sudo snap install --devmode rzv-ai-sdk-r01_1.0_arm64.snap
+rzv-ai-sdk-r01.object-detection
 ```
 
 ## License
