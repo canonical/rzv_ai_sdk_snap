@@ -6,7 +6,7 @@ index b27937d..62a17ca 100644
  
  #include "draw.h"
  
-+// #define DISABLE_AI
++#define DISABLE_AI
 +
  /*****************************************
  * Global Variables
@@ -154,7 +154,7 @@ index 6dd1f12..67178d6 100755
  #include "box.h"
  #include "wayland.h"
  
-+// #define DISABLE_AI
++#define DISABLE_AI
 +
  /*Multithreading*/
  static sem_t terminate_req_sem;
@@ -301,7 +301,7 @@ index 3d309c6..6492c65 100755
  /*Mutual exclusion*/
  #include <mutex>
  
-+// #define DISABLE_AI
++#define DISABLE_AI
 +
  /*****************************************
  * Global Variables
