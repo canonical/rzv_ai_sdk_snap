@@ -1,9 +1,9 @@
 name: rzv-ai-sdk-collection
 base: core24
 version: '1.0'
-summary: Renesas RZ/V AI SDK Examples (V2L, cross-compiled)
+summary: Renesas RZ/V AI SDK Examples (V2H, cross-compiled)
 description: |
-  Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2L.
+  Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2H.
   TVM runtime is staged from renesas-rz/rzv_drp-ai_tvm.
 
 grade: devel
@@ -47,15 +47,15 @@ parts:
       ls -l $CRAFT_PART_SRC
       mkdir -p "$CRAFT_PART_INSTALL/usr/local/tvm"
       cp -a $CRAFT_PART_SRC/tvm $CRAFT_PART_INSTALL/usr/local/tvm/
-      
-      # Follow Renesas Dockerfile setup   
+
+      # Follow Renesas Dockerfile setup
       cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
-      
-      # Copy to TVM folder to match with CMakefiles  
+
+      # Copy to TVM folder to match with CMakefiles
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
       cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
 
-      # Workaround without the libc header from kernel 
+      # Workaround without the libc header from kernel
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
       cp ${CRAFT_PROJECT_DIR}/drpai.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
 
@@ -85,25 +85,25 @@ parts:
       - pkg-config
       - gcc-aarch64-linux-gnu
       - g++-aarch64-linux-gnu
-      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR 
-      - libopencv-video-dev:$CRAFT_ARCH_BUILD_FOR 
-      - libopencv-highgui-dev:$CRAFT_ARCH_BUILD_FOR 
-      - libopencv-imgproc-dev:$CRAFT_ARCH_BUILD_FOR 
+      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-video-dev:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-highgui-dev:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-imgproc-dev:$CRAFT_ARCH_BUILD_FOR
       - libopencv-imgcodecs-dev:$CRAFT_ARCH_BUILD_FOR
       - libopencv-videoio-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
-      - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR 
-      - libboost1.83-dev:$CRAFT_ARCH_BUILD_FOR 
+      - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR
+      - libboost1.83-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
       - linux-libc-dev-renesas
     stage-packages:
       - libmmngr1:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-video406t64:$CRAFT_ARCH_BUILD_FOR 
-      - libopencv-highgui406t64:$CRAFT_ARCH_BUILD_FOR 
-      - libopencv-imgproc406t64:$CRAFT_ARCH_BUILD_FOR 
+      - libopencv-video406t64:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-highgui406t64:$CRAFT_ARCH_BUILD_FOR
+      - libopencv-imgproc406t64:$CRAFT_ARCH_BUILD_FOR
       - libopencv-imgcodecs406t64:$CRAFT_ARCH_BUILD_FOR
       - libopencv-videoio406t64:$CRAFT_ARCH_BUILD_FOR
       - libopencv-contrib406t64:$CRAFT_ARCH_BUILD_FOR
@@ -115,11 +115,11 @@ parts:
 
   object-detection-model:
     after: [r01-object-detection]
-    source: https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v7.00/R01_object_detection_deploy_tvm_v2l-v261.so
+    source: https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v6.20/R01_object_detection_deploy_tvm_v2h-v251.so
     source-type: file
     plugin: dump
     organize:
-      R01_object_detection_deploy_tvm_v2l-v261.so: usr/r01/bin/yolov3_onnx/deploy.so
+      R01_object_detection_deploy_tvm_v2h-v251.so: usr/r01/bin/yolov3_onnx/deploy.so
 
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
@@ -131,11 +131,18 @@ parts:
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
-      - PRODUCT: V2L
+      - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+    build-packages:
+      - libwayland-bin  # provides wayland-scanner
     override-build: |
+      # Generate the file where the CMakeLists.txt expects it
+      mkdir -p /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/
+      wayland-scanner private-code \
+        /usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml \
+        /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/xdg-shell-client-protocol.c
       mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
     override-prime: |
       craftctl default
@@ -151,11 +158,11 @@ parts:
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
-      - PRODUCT: V2L
+      - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
     override-prime: |
       craftctl default
@@ -171,11 +178,11 @@ parts:
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
-      - PRODUCT: V2L
+      - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2h/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
     override-prime: |
       craftctl default
