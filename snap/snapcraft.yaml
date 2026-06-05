@@ -74,11 +74,10 @@ parts:
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
     source-tag: v6.20
-    override-build: |
-      # Patch CMakefiles for correct TVM run time library and add install support
-      git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
-      git apply -v ${CRAFT_PROJECT_DIR}/cam_gst.patch
+    override-pull: |
       craftctl default
+      # Patch CMakefiles for correct TVM run time library and add install support
+      git apply -v ${CRAFT_PROJECT_DIR}/patches/cmake.patch
     build-packages:
       - cmake
       - ninja-build
@@ -126,7 +125,7 @@ parts:
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
     plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/Q01_footfall_counter/src
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/src
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q01
@@ -139,6 +138,7 @@ parts:
       - wayland-protocols
       - libwayland-bin  # provides wayland-scanner
     override-build: |
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/q01.patch
       # Generate the file where the CMakeLists.txt expects it
       mkdir -p /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/
       wayland-scanner private-code \
@@ -149,7 +149,7 @@ parts:
         /usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml \
         /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/xdg-shell-client-protocol.h
       mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/Q01_footfall_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q01/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
     override-prime: |
       craftctl default
@@ -158,7 +158,7 @@ parts:
   q08-object-counter:
     after: [rz-ai-sdk-src]
     plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/Q08_object_counter/src
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/src
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/q08
@@ -168,8 +168,9 @@ parts:
       - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/q08.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/Q08_object_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q08/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2h/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
     override-prime: |
       craftctl default
@@ -178,7 +179,7 @@ parts:
   r01-object-detection:
     after: [rz-ai-sdk-src]
     plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/R01_object_detection/src
+    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/src
     source-type: local
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/r01
@@ -188,8 +189,9 @@ parts:
       - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/r01.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/build/R01_object_detection/exe_v2h/* $CRAFT_PART_INSTALL/usr/r01/bin/
+      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2h/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
     override-prime: |
       craftctl default
