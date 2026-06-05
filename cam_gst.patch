@@ -320,7 +320,7 @@ index 6dd1f12..c217cac 100755
      printf("Application End\n");
      return ret_main;
 diff --git a/R01_object_detection/src/main.cpp b/R01_object_detection/src/main.cpp
-index 3d309c6..2dd8888 100755
+index 3d309c6..f93f564 100755
 --- a/R01_object_detection/src/main.cpp
 +++ b/R01_object_detection/src/main.cpp
 @@ -66,6 +66,8 @@
@@ -389,26 +389,37 @@ index 3d309c6..2dd8888 100755
                      mtx.unlock();
                      inference_start.store(1); /* Flag for AI Inference Thread. */
                  }
-@@ -1365,7 +1373,9 @@ int32_t main(int32_t argc, char * argv[])
-     unsigned long OCA_list[OCA_LIST_NUM];
+@@ -1357,6 +1365,7 @@ int32_t main(int32_t argc, char * argv[])
+     }
+ 
+     #ifdef V2H
++#ifndef DISABLE_AI
+     /*Disable OpenCV Accelerator due to the use of multithreading */
+     #ifdef V2N
+     unsigned long OCA_list[16];
+@@ -1366,6 +1375,7 @@ int32_t main(int32_t argc, char * argv[])
      for (int i=0; i < OCA_LIST_NUM; i++) OCA_list[i] = 0;
      #endif
-+#ifndef DISABLE_AI
      OCA_Activate( &OCA_list[0] );
 +#endif
      printf("Disable OpenCVA\n");
      
      std::string media_port = query_device_status("usb");
-@@ -1374,7 +1384,7 @@ int32_t main(int32_t argc, char * argv[])
+@@ -1374,8 +1384,11 @@ int32_t main(int32_t argc, char * argv[])
      /* MIPI Camera Setup */
      mipi_cam_init();
      #endif
 -    gstreamer_pipeline = "v4l2src device=" + media_port +" io-mode=dmabuf ! video/x-raw, width="+std::to_string(CAM_IMAGE_WIDTH)+", height="+std::to_string(CAM_IMAGE_HEIGHT)+" ,framerate=30/1 ! videoconvert ! appsink -v";
+-
++#ifndef DISABLE_AI
 +    gstreamer_pipeline = "v4l2src device=" + media_port + " io-mode=dmabuf ! video/x-raw,format=UYVY,width="+std::to_string(CAM_IMAGE_WIDTH)+", height="+std::to_string(CAM_IMAGE_HEIGHT)+" ,framerate=30/1 ! videoconvert ! appsink -v";
- 
++#else
++    gstreamer_pipeline = "v4l2src device=" + media_port + " ! videoconvert ! appsink";
++#endif
      printf("RZ/V AI SDK Sample Application\n");
      printf("Model : Darknet YOLOv3 | %s\n", model_dir.c_str());
-@@ -1411,6 +1421,7 @@ int32_t main(int32_t argc, char * argv[])
+     printf("Input : %s\n", INPUT_CAM_NAME);
+@@ -1411,6 +1424,7 @@ int32_t main(int32_t argc, char * argv[])
  
      /*DRP-AI Driver initialization*/
      errno = 0;
@@ -416,7 +427,7 @@ index 3d309c6..2dd8888 100755
      drpai_fd = open("/dev/drpai0", O_RDWR);
      if (0 > drpai_fd)
      {
-@@ -1474,6 +1485,7 @@ int32_t main(int32_t argc, char * argv[])
+@@ -1474,6 +1488,7 @@ int32_t main(int32_t argc, char * argv[])
          fprintf(stderr, "[ERROR] Failed to Allocate DMA buffer for the drpai_buf\n");
          goto end_free_malloc;
      }
@@ -424,7 +435,7 @@ index 3d309c6..2dd8888 100755
  
      /*Initialize Image object.*/
      ret = img.init(CAM_IMAGE_WIDTH, CAM_IMAGE_HEIGHT, CAM_IMAGE_CHANNEL_BGR, 
-@@ -1503,6 +1515,7 @@ int32_t main(int32_t argc, char * argv[])
+@@ -1503,6 +1518,7 @@ int32_t main(int32_t argc, char * argv[])
          ret_main = -1;
          goto end_threads;
      }
@@ -432,7 +443,7 @@ index 3d309c6..2dd8888 100755
      /*Create Inference Thread*/
      create_thread_ai = pthread_create(&ai_inf_thread, NULL, R_Inf_Thread, NULL);
      if (0 != create_thread_ai)
-@@ -1512,6 +1525,7 @@ int32_t main(int32_t argc, char * argv[])
+@@ -1512,6 +1528,7 @@ int32_t main(int32_t argc, char * argv[])
          ret_main = -1;
          goto end_threads;
      }
@@ -440,7 +451,7 @@ index 3d309c6..2dd8888 100755
      /*Create Capture Thread*/
      create_thread_capture = pthread_create(&capture_thread, NULL, R_Capture_Thread, NULL);
      if (0 != create_thread_capture)
-@@ -1586,6 +1600,7 @@ end_threads:
+@@ -1586,6 +1603,7 @@ end_threads:
              ret_main = -1;
          }
      }
@@ -448,7 +459,7 @@ index 3d309c6..2dd8888 100755
      if (0 == create_thread_ai)
      {
          ret = wait_join(&ai_inf_thread, AI_THREAD_TIMEOUT);
-@@ -1595,6 +1610,7 @@ end_threads:
+@@ -1595,6 +1613,7 @@ end_threads:
              ret_main = -1;
          }
      }
@@ -456,7 +467,7 @@ index 3d309c6..2dd8888 100755
      if (0 == create_thread_key)
      {
          ret = wait_join(&kbhit_thread, KEY_THREAD_TIMEOUT);
-@@ -1616,16 +1632,21 @@ end_threads:
+@@ -1616,16 +1635,21 @@ end_threads:
      goto end_close_dmabuf;
  
  end_close_dmabuf:
@@ -478,7 +489,7 @@ index 3d309c6..2dd8888 100755
      /*Close DRP-AI Driver.*/
      if (0 < drpai_fd)
      {
-@@ -1637,6 +1658,7 @@ end_close_drpai:
+@@ -1637,6 +1661,7 @@ end_close_drpai:
              ret_main = -1;
          }
      }
