@@ -74,11 +74,11 @@ parts:
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
     source-tag: v6.20
-    override-pull: |
-      craftctl default
+    override-build: |
       # Patch CMakefiles for correct TVM run time library and add install support
       git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
       git apply -v ${CRAFT_PROJECT_DIR}/cam_gst.patch
+      craftctl default
     build-packages:
       - cmake
       - ninja-build
