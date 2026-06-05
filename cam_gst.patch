@@ -320,7 +320,7 @@ index 6dd1f12..c217cac 100755
      printf("Application End\n");
      return ret_main;
 diff --git a/R01_object_detection/src/main.cpp b/R01_object_detection/src/main.cpp
-index 3d309c6..f93f564 100755
+index 3d309c6..3b86be3 100755
 --- a/R01_object_detection/src/main.cpp
 +++ b/R01_object_detection/src/main.cpp
 @@ -66,6 +66,8 @@
@@ -414,7 +414,7 @@ index 3d309c6..f93f564 100755
 +#ifndef DISABLE_AI
 +    gstreamer_pipeline = "v4l2src device=" + media_port + " io-mode=dmabuf ! video/x-raw,format=UYVY,width="+std::to_string(CAM_IMAGE_WIDTH)+", height="+std::to_string(CAM_IMAGE_HEIGHT)+" ,framerate=30/1 ! videoconvert ! appsink -v";
 +#else
-+    gstreamer_pipeline = "v4l2src device=" + media_port + " ! videoconvert ! appsink";
++    gstreamer_pipeline = "v4l2src device=" + media_port + " io-mode=dmabuf ! videoconvert ! appsink -v";
 +#endif
      printf("RZ/V AI SDK Sample Application\n");
      printf("Model : Darknet YOLOv3 | %s\n", model_dir.c_str());
