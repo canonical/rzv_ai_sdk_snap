@@ -1,5 +1,5 @@
 diff --git a/R01_object_detection/src/main.cpp b/R01_object_detection/src/main.cpp
-index 3d309c6..3b86be3 100755
+index 3d309c6..c458a3b 100755
 --- a/R01_object_detection/src/main.cpp
 +++ b/R01_object_detection/src/main.cpp
 @@ -66,6 +66,8 @@
@@ -52,11 +52,17 @@ index 3d309c6..3b86be3 100755
              return;
          }
      }
-@@ -936,6 +942,7 @@ void *R_Capture_Thread(void *threadid)
+@@ -932,10 +938,11 @@ void *R_Capture_Thread(void *threadid)
+                     mtx.lock();
+                     /*Image: CAM_IMAGE_WIDTH*CAM_IMAGE_HEIGHT (BGR) */
+                     input_image = g_frame.clone();
+-                    
++#ifndef DISABLE_AI                    
                      /*Add padding for keeping the aspect ratio: CAM_IMAGE_WIDTH*CAM_IMAGE_WIDTH (BGR) */
                      cv::vconcat(input_image, padding_frame, input_image);
-                     
-+#ifndef DISABLE_AI
+-                    
++
++
                      /*Copy input data to drpai_buf for DRP-AI Pre-processing Runtime.*/
                      memcpy( drpai_buf->mem, input_image.data, drpai_buf->size);
                      /* Flush buffer */
