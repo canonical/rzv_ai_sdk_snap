@@ -42,6 +42,7 @@ parts:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_drp-ai_tvm.git
     source-type: git
+    source-tag: v2.5.1
     override-build: |
       set -eux
       ls -l $CRAFT_PART_SRC
