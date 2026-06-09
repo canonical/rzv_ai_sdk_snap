@@ -53,8 +53,8 @@ parts:
       cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
 
       # Copy to TVM folder to match with CMakefiles
-      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
-      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/V2H/
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/V2H/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/V2H/
 
       # Workaround without the libc header from kernel
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
@@ -64,7 +64,7 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PRIME/usr/lib/
       # Install runtime library
-      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PRIME/usr/lib/
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/V2H/* $CRAFT_PRIME/usr/lib/
 
       # Remove TVM
       rm -rf $CRAFT_PRIME/usr/local/tvm/
@@ -136,6 +136,8 @@ parts:
       - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     build-packages:
+      - libmmngr1:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
       - wayland-protocols
       - libwayland-bin  # provides wayland-scanner
     override-build: |

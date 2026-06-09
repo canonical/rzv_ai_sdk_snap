@@ -7,7 +7,7 @@ index c5ccffd..a94be26 100644
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME object_tracker)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -26,7 +26,7 @@ index eb292d5..9cae524 100644
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME face_recognition)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -48,7 +48,7 @@ index 7e22851..39d359c 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME fish_classification)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -70,7 +70,7 @@ index 3f620f9..ccf852f 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME suspicious_activity)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -89,7 +89,7 @@ index 5689618..90141fd 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME date_extraction)
  # set common files sources
  file(GLOB COMM_SRC ./common/*.cpp ./common/*.h ./common/*/*.cpp ./common/*/*.h)
@@ -108,7 +108,7 @@ index 2c215b5..2c25973 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME plant_leaf_disease_classify)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -127,7 +127,7 @@ index c9e60a5..96914bc 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME object_counter)
  set(PRODUCT $ENV{PRODUCT})
  
@@ -149,7 +149,7 @@ index 65c96b6..5c50c7c 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME crack_segmentation)
  # set common files sources
  file(GLOB COMM_SRC ./common/*.cpp ./common/*.h ./common/*/*.cpp ./common/*/*.h)
@@ -168,7 +168,7 @@ index 4e816e5..3495a6f 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME suspicious_person_detector)
  # set common files sources
  file(GLOB COMM_SRC ./common/*.cpp ./common/*.h ./common/*/*.cpp ./common/*/*.h)
@@ -187,7 +187,7 @@ index 885b5ea..e70055e 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME fish_detector)
  # set common files sources
  file(GLOB COMM_SRC ./common/*.cpp ./common/*.h ./common/*/*.cpp ./common/*/*.h)
@@ -206,7 +206,7 @@ index fc31d1b..1b8b4d8 100755
  include_directories(${TVM_ROOT}/3rdparty/compiler-rt)
  
 -set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
-+set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/v2m/lib/libdrp_tvm_rt.so)
++set(TVM_RUNTIME_LIB ${TVM_ROOT}/../obj/build_runtime/V2H/libtvm_runtime.so)
  set(EXE_NAME object_detection)
  set(PRODUCT $ENV{PRODUCT})
  
