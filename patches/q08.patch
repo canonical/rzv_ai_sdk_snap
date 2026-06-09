@@ -1,0 +1,113 @@
+diff --git a/Q08_object_counter/src/main.cpp b/Q08_object_counter/src/main.cpp
+index 6dd1f12..070e3ff 100755
+--- a/Q08_object_counter/src/main.cpp
++++ b/Q08_object_counter/src/main.cpp
+@@ -51,6 +51,8 @@
+ #include "box.h"
+ #include "wayland.h"
+ 
++#define DISABLE_AI
++
+ /*Multithreading*/
+ static sem_t terminate_req_sem;
+ static pthread_t ai_inf_thread;
+@@ -1228,22 +1230,26 @@ void mipi_cam_init(void)
+ {
+     int ret = 0;
+     std::cout << "[INFO] MIPI CAM Init \n";
+-    const char *commands[4] =
+-        {
+-            "media-ctl -d /dev/media0 -r",
+-            "media-ctl -d /dev/media0 -V \"\'ov5645 0-003c\':0 [fmt:UYVY8_2X8/640x480 field:none]\"",
+-            "media-ctl -d /dev/media0 -l \"\'rzg2l_csi2 10830400.csi2\':1 -> \'CRU output\':0 [1]\"",
+-            "media-ctl -d /dev/media0 -V \"\'rzg2l_csi2 10830400.csi2\':1 [fmt:UYVY8_2X8/640x480 field:none]\""};
++
++    constexpr size_t NUM_COMMANDS = 5U;
++    std::array<std::string, NUM_COMMANDS> const commands =
++    {
++      "media-ctl -d /dev/media0 -r",
++      "media-ctl -d /dev/media0 -l \"'csi-10830400.csi2':1 -> 'cru-ip-10830000.video':0 [1]\"",
++      "media-ctl -d /dev/media0 -V \"'csi-10830400.csi2':1 [fmt:UYVY8_2X8/640x480 field:none]\"",
++      "media-ctl -d /dev/media0 -V \"'ov5645 0-003c':0 [fmt:UYVY8_2X8/640x480 field:none]\"",
++      "media-ctl -d /dev/media0 -V \"'cru-ip-10830000.video':0 [fmt:UYVY8_2X8/640x480 field:none]\""
++    };
+ 
+     /* media-ctl command */
+-    for (int i = 0; i < 4; i++)
++    for (auto const& command : commands)
+     {
+-        std::cout << commands[i] << "\n";
+-        ret = system(commands[i]);
++        std::cout << command << "\n";
++        ret = system(command.c_str());
+         std::cout << "system ret = " << ret << "\n";
+         if (ret < 0)
+         {
+-            std::cout << "[ERROR]" << __func__ << ": failed media-ctl commands. index = " << i << "\n";
++            std::cout << "[ERROR]" << __func__ << ": failed media-ctl command:" << command << "\n";
+             return;
+         }
+     }
+@@ -1266,11 +1272,13 @@ int32_t main(int32_t argc, char *argv[])
+     int8_t ret_main = 0;
+ 
+ #ifdef V2H
++#ifndef DISABLE_AI
+     /*Disable OpenCV Accelerator due to the use of multithreading */
+     unsigned long OCA_list[16];
+     for (int i = 0; i < 16; i++)
+         OCA_list[i] = 0;
+     OCA_Activate(&OCA_list[0]);
++#endif
+ #endif
+ 
+     /*Multithreading Variables*/
+@@ -1292,7 +1300,6 @@ int32_t main(int32_t argc, char *argv[])
+ 
+     std::string mode = argv[1];
+     std::string input_source = argv[2];
+-
+     std::map<std::string, std::string> args;
+     /* Parse input arguments */
+     for (int i = 1; i < argc; ++i)
+@@ -1358,7 +1365,7 @@ int32_t main(int32_t argc, char *argv[])
+         std::cout << "[INFO] MIPI CAMERA \n";
+         mipi_cam_init();
+         std::string media_port = query_device_status("CRU");
+-        gstreamer_pipeline = "v4l2src device=" + media_port + " ! videoconvert ! appsink";
++        gstreamer_pipeline = "v4l2src device=" + media_port + " ! video/x-raw,format=UYVY,width=640,height=480,framerate=15/1 ! videoconvert ! appsink";
+     }
+     break;
+     /* Input Source : USB Camera */
+@@ -1509,6 +1516,7 @@ end_threads:
+             ret_main = -1;
+         }
+     }
++
+     if (0 == create_thread_ai)
+     {
+         ret = wait_join(&ai_inf_thread, AI_THREAD_TIMEOUT);
+@@ -1518,6 +1526,7 @@ end_threads:
+             ret_main = -1;
+         }
+     }
++
+     if (0 == create_thread_key)
+     {
+         ret = wait_join(&kbhit_thread, EXIT_THREAD_TIMEOUT);
+@@ -1535,6 +1544,7 @@ end_threads:
+     }
+     goto end_main;
+ end_main:
++
+     /*Close DRP-AI Driver.*/
+     if (0 < drpai_fd)
+     {
+@@ -1546,6 +1556,7 @@ end_main:
+             ret_main = -1;
+         }
+     }
++
+     delete[] drpai_output_buf;
+     printf("Application End\n");
+     return ret_main;
