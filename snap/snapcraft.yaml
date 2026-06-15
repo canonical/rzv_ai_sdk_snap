@@ -123,14 +123,6 @@ parts:
     organize:
       Q01_footfall_counter_deploy_tvm_v2h-v251.so: usr/q01/bin/d-yolov3/deploy.so
 
-  object-detection-model:
-    after: [r01-object-detection]
-    source: https://github.com/renesas-rz/rzv_ai_sdk/releases/download/v6.20/R01_object_detection_deploy_tvm_v2h-v251.so
-    source-type: file
-    plugin: dump
-    organize:
-      R01_object_detection_deploy_tvm_v2h-v251.so: usr/r01/bin/yolov3_onnx/deploy.so
-
   q01-footfall-counter:
     after: [rz-ai-sdk-src]
     plugin: cmake
@@ -187,29 +179,8 @@ parts:
       craftctl default
       cp -a ${CRAFT_PROJECT_DIR}/launch-object-counter.sh $CRAFT_PRIME/usr/q08/bin/
 
-  r01-object-detection:
-    after: [rz-ai-sdk-src]
-    plugin: cmake
-    source: ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/src
-    source-type: local
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr/r01
-      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
-      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
-    build-environment:
-      - PRODUCT: V2H
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
-    override-build: |
-      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/r01.patch
-      mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
-      cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2h/* $CRAFT_PART_INSTALL/usr/r01/bin/
-      craftctl default
-    override-prime: |
-      craftctl default
-      cp -a ${CRAFT_PROJECT_DIR}/launch-object-detection.sh $CRAFT_PRIME/usr/r01/bin/
-
   gpu-2404:
-    after: [q01-footfall-counter, q08-object-counter, r01-object-detection]
+    after: [q01-footfall-counter, q08-object-counter]
     source: https://github.com/canonical/gpu-snap.git
     plugin: dump
     override-prime: |
@@ -247,16 +218,3 @@ apps:
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
     plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
 
-  object-detection:
-    command-chain:
-    - bin/gpu-2404-wrapper
-    command: usr/r01/bin/launch-object-detection.sh
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/lapack:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/blas:$SNAP/usr/lib/aarch64-linux-gnu/pulseaudio
-      XDG_RUNTIME_DIR: /run/user/1000
-      WAYLAND_DISPLAY: wayland-0
-      QT_QPA_PLATFORM: wayland-egl
-      QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
-      XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
-      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
