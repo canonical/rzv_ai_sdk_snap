@@ -43,6 +43,7 @@ parts:
     source: https://github.com/renesas-rz/rzv_drp-ai_tvm.git
     source-type: git
     source-tag: v2.5.1
+    source-depth: 1
     override-build: |
       set -eux
       ls -l $CRAFT_PART_SRC
@@ -69,12 +70,84 @@ parts:
       # Remove TVM
       rm -rf $CRAFT_PRIME/usr/local/tvm/
 
+  opencv:
+    plugin: cmake
+    source: https://github.com/opencv/opencv.git
+    source-type: git
+    source-tag: "4.9.0"
+    source-depth: 1
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+      - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_SHARED_LIBS=ON
+      - -DBUILD_TESTS=OFF
+      - -DBUILD_PERF_TESTS=OFF
+      - -DBUILD_EXAMPLES=OFF
+      - -DBUILD_DOCS=OFF
+      - -DWITH_GTK=ON
+      - -DWITH_FFMPEG=ON
+      - -DWITH_GSTREAMER=ON
+      - -DWITH_TBB=ON
+      - -DWITH_OPENMP=ON
+      - -DWITH_IPP=OFF
+      - -DWITH_CUDA=OFF
+      - -DWITH_1394=OFF
+      - -DWITH_OPENEXR=OFF
+      - -DBUILD_opencv_python3=OFF
+      - -DOPENCV_GENERATE_PKGCONFIG=ON
+    build-packages:
+      - build-essential
+      - cmake
+      - pkg-config
+      - libgtk-3-dev:$CRAFT_ARCH_BUILD_FOR
+      - libavcodec-dev:$CRAFT_ARCH_BUILD_FOR
+      - libavformat-dev:$CRAFT_ARCH_BUILD_FOR
+      - libswscale-dev:$CRAFT_ARCH_BUILD_FOR
+      - libtbb-dev:$CRAFT_ARCH_BUILD_FOR
+      - libjpeg-dev:$CRAFT_ARCH_BUILD_FOR
+      - libpng-dev:$CRAFT_ARCH_BUILD_FOR
+      - libtiff-dev:$CRAFT_ARCH_BUILD_FOR
+      - libwebp-dev:$CRAFT_ARCH_BUILD_FOR
+      - libopenblas-dev:$CRAFT_ARCH_BUILD_FOR
+      - libeigen3-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer1.0-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer-plugins-base1.0-dev:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer-plugins-bad1.0-dev:$CRAFT_ARCH_BUILD_FOR
+    stage-packages:
+      - libgtk-3-0:$CRAFT_ARCH_BUILD_FOR
+      - libavcodec60:$CRAFT_ARCH_BUILD_FOR
+      - libavformat60:$CRAFT_ARCH_BUILD_FOR
+      - libavutil58:$CRAFT_ARCH_BUILD_FOR
+      - libswscale7:$CRAFT_ARCH_BUILD_FOR
+      - libtbb12:$CRAFT_ARCH_BUILD_FOR
+      - libtiff6:$CRAFT_ARCH_BUILD_FOR
+      - libjpeg-turbo8:$CRAFT_ARCH_BUILD_FOR
+      - libpng16-16:$CRAFT_ARCH_BUILD_FOR
+      - libwebp7:$CRAFT_ARCH_BUILD_FOR
+      - libopenblas0:$CRAFT_ARCH_BUILD_FOR
+      - librsvg2-common:$CRAFT_ARCH_BUILD_FOR
+      - libgdk-pixbuf2.0-0:$CRAFT_ARCH_BUILD_FOR
+      - libgdk-pixbuf2.0-common:$CRAFT_ARCH_BUILD_FOR
+      - gir1.2-gdkpixbuf-2.0:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer1.0-0:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer-plugins-base1.0-0:$CRAFT_ARCH_BUILD_FOR
+      - libgstreamer-plugins-bad1.0-0:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-plugins-base:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-plugins-bad:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-plugins-ugly:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-plugins-base-apps:$CRAFT_ARCH_BUILD_FOR
+      - gstreamer1.0-tools:$CRAFT_ARCH_BUILD_FOR
+
   rz-ai-sdk-src:
-    after: [tvm-runtime]
+    after: [tvm-runtime, opencv]
     plugin: nil
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
     source-tag: v6.20
+    source-depth: 1
     override-pull: |
       craftctl default
       # Patch CMakefiles for correct TVM run time library and add install support
@@ -85,12 +158,6 @@ parts:
       - pkg-config
       - gcc-aarch64-linux-gnu
       - g++-aarch64-linux-gnu
-      - libopencv-dev:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-video-dev:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-highgui-dev:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-imgproc-dev:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-imgcodecs-dev:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-videoio-dev:$CRAFT_ARCH_BUILD_FOR
       - libwayland-dev:$CRAFT_ARCH_BUILD_FOR
       - libgles-dev:$CRAFT_ARCH_BUILD_FOR
       - libtesseract-dev:$CRAFT_ARCH_BUILD_FOR
@@ -101,12 +168,6 @@ parts:
     stage-packages:
       - libmmngr1:$CRAFT_ARCH_BUILD_FOR
       - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-video406t64:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-highgui406t64:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-imgproc406t64:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-imgcodecs406t64:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-videoio406t64:$CRAFT_ARCH_BUILD_FOR
-      - libopencv-contrib406t64:$CRAFT_ARCH_BUILD_FOR
       - libtesseract5:$CRAFT_ARCH_BUILD_FOR
       - v4l-utils:$CRAFT_ARCH_BUILD_FOR
       - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
@@ -132,6 +193,7 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr/q01
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+      - -DOpenCV_DIR=$SNAPCRAFT_STAGE/usr/lib/cmake/opencv4
     build-environment:
       - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
@@ -167,6 +229,7 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr/q08
       - -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+      - -DOpenCV_DIR=$SNAPCRAFT_STAGE/usr/lib/cmake/opencv4
     build-environment:
       - PRODUCT: V2H
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
