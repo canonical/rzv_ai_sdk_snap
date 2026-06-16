@@ -39,6 +39,7 @@ package-repositories:
 
 parts:
   shared-libs:
+    plugin: nil
     stage-packages:
     - libgtk-3-0:$CRAFT_ARCH_BUILD_FOR
     - libavcodec60:$CRAFT_ARCH_BUILD_FOR
