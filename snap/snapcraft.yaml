@@ -38,6 +38,42 @@ package-repositories:
     url: http://ppa.launchpad.net/ubuntu-on-renesas/public-ppa/ubuntu
 
 parts:
+  shared-libs:
+    stage-packages:
+    - libgtk-3-0:$CRAFT_ARCH_BUILD_FOR
+    - libavcodec60:$CRAFT_ARCH_BUILD_FOR
+    - libavformat60:$CRAFT_ARCH_BUILD_FOR
+    - libavutil58:$CRAFT_ARCH_BUILD_FOR
+    - libswscale7:$CRAFT_ARCH_BUILD_FOR
+    - libtbb12:$CRAFT_ARCH_BUILD_FOR
+    - libtiff6:$CRAFT_ARCH_BUILD_FOR
+    - libjpeg-turbo8:$CRAFT_ARCH_BUILD_FOR
+    - libpng16-16:$CRAFT_ARCH_BUILD_FOR
+    - libwebp7:$CRAFT_ARCH_BUILD_FOR
+    - libopenblas0:$CRAFT_ARCH_BUILD_FOR
+    - librsvg2-common:$CRAFT_ARCH_BUILD_FOR
+    - librsvg2-2:$CRAFT_ARCH_BUILD_FOR
+    - librsvg2-common:$CRAFT_ARCH_BUILD_FOR
+    - adwaita-icon-theme:$CRAFT_ARCH_BUILD_FOR
+    - libgdk-pixbuf2.0-0:$CRAFT_ARCH_BUILD_FOR
+    - libgdk-pixbuf2.0-common:$CRAFT_ARCH_BUILD_FOR
+    - gir1.2-gdkpixbuf-2.0:$CRAFT_ARCH_BUILD_FOR
+    - libgstreamer1.0-0:$CRAFT_ARCH_BUILD_FOR
+    - libgstreamer-plugins-base1.0-0:$CRAFT_ARCH_BUILD_FOR
+    - libgstreamer-plugins-bad1.0-0:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-plugins-base:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-plugins-bad:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-plugins-ugly:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-plugins-base-apps:$CRAFT_ARCH_BUILD_FOR
+    - gstreamer1.0-tools:$CRAFT_ARCH_BUILD_FOR
+    override-prime: |
+      craftctl default
+      $CRAFT_PRIME/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders \
+        > $CRAFT_PRIME/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+      sed -i "s|$CRAFT_PRIME||g" \
+        $CRAFT_PRIME/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+
   tvm-runtime:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_drp-ai_tvm.git
@@ -115,31 +151,6 @@ parts:
       - libgstreamer1.0-dev:$CRAFT_ARCH_BUILD_FOR
       - libgstreamer-plugins-base1.0-dev:$CRAFT_ARCH_BUILD_FOR
       - libgstreamer-plugins-bad1.0-dev:$CRAFT_ARCH_BUILD_FOR
-    stage-packages:
-      - libgtk-3-0:$CRAFT_ARCH_BUILD_FOR
-      - libavcodec60:$CRAFT_ARCH_BUILD_FOR
-      - libavformat60:$CRAFT_ARCH_BUILD_FOR
-      - libavutil58:$CRAFT_ARCH_BUILD_FOR
-      - libswscale7:$CRAFT_ARCH_BUILD_FOR
-      - libtbb12:$CRAFT_ARCH_BUILD_FOR
-      - libtiff6:$CRAFT_ARCH_BUILD_FOR
-      - libjpeg-turbo8:$CRAFT_ARCH_BUILD_FOR
-      - libpng16-16:$CRAFT_ARCH_BUILD_FOR
-      - libwebp7:$CRAFT_ARCH_BUILD_FOR
-      - libopenblas0:$CRAFT_ARCH_BUILD_FOR
-      - librsvg2-common:$CRAFT_ARCH_BUILD_FOR
-      - libgdk-pixbuf2.0-0:$CRAFT_ARCH_BUILD_FOR
-      - libgdk-pixbuf2.0-common:$CRAFT_ARCH_BUILD_FOR
-      - gir1.2-gdkpixbuf-2.0:$CRAFT_ARCH_BUILD_FOR
-      - libgstreamer1.0-0:$CRAFT_ARCH_BUILD_FOR
-      - libgstreamer-plugins-base1.0-0:$CRAFT_ARCH_BUILD_FOR
-      - libgstreamer-plugins-bad1.0-0:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-base:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-bad:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-ugly:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-base-apps:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-tools:$CRAFT_ARCH_BUILD_FOR
 
   rz-ai-sdk-src:
     after: [tvm-runtime, opencv]
@@ -170,7 +181,6 @@ parts:
       - libmmngrbuf1:$CRAFT_ARCH_BUILD_FOR
       - libtesseract5:$CRAFT_ARCH_BUILD_FOR
       - v4l-utils:$CRAFT_ARCH_BUILD_FOR
-      - gstreamer1.0-plugins-good:$CRAFT_ARCH_BUILD_FOR
       - qtwayland5:$CRAFT_ARCH_BUILD_FOR
       - xkb-data:$CRAFT_ARCH_BUILD_FOR
     prime:
@@ -265,6 +275,8 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/usr/lib/aarch64-linux-gnu/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d
+      GDK_PIXBUF_MODULE_FILE: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+      GDK_PIXBUF_MODULEDIR: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
     plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
 
   object-counter:
@@ -279,5 +291,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
+      GDK_PIXBUF_MODULE_FILE: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+      GDK_PIXBUF_MODULEDIR: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
     plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
 
