@@ -49,7 +49,7 @@ parts:
     - libtbb12:$CRAFT_ARCH_BUILD_FOR
     - libtiff6:$CRAFT_ARCH_BUILD_FOR
     - libjpeg-turbo8:$CRAFT_ARCH_BUILD_FOR
-    - libpng16-16:$CRAFT_ARCH_BUILD_FOR
+    - libpng16-16t64:$CRAFT_ARCH_BUILD_FOR
     - libwebp7:$CRAFT_ARCH_BUILD_FOR
     - libopenblas0:$CRAFT_ARCH_BUILD_FOR
     - librsvg2-common:$CRAFT_ARCH_BUILD_FOR
@@ -58,6 +58,7 @@ parts:
     - adwaita-icon-theme:$CRAFT_ARCH_BUILD_FOR
     - libgdk-pixbuf2.0-0:$CRAFT_ARCH_BUILD_FOR
     - libgdk-pixbuf2.0-common:$CRAFT_ARCH_BUILD_FOR
+    - shared-mime-info:$CRAFT_ARCH_BUILD_FOR
     - gir1.2-gdkpixbuf-2.0:$CRAFT_ARCH_BUILD_FOR
     - libgstreamer1.0-0:$CRAFT_ARCH_BUILD_FOR
     - libgstreamer-plugins-base1.0-0:$CRAFT_ARCH_BUILD_FOR
@@ -70,6 +71,9 @@ parts:
     - gstreamer1.0-tools:$CRAFT_ARCH_BUILD_FOR
     override-prime: |
       craftctl default
+      # Generate MIME database
+      update-mime-database $CRAFT_PRIME/usr/share/mime
+      # Generate loaders cache for GDK Pixbuf image loader plugins
       $CRAFT_PRIME/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders \
         > $CRAFT_PRIME/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
       sed -i "s|$CRAFT_PRIME||g" \
@@ -276,8 +280,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/usr/lib/aarch64-linux-gnu/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d
-      GDK_PIXBUF_MODULE_FILE: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
-      GDK_PIXBUF_MODULEDIR: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+      XDG_DATA_DIRS: $SNAP/usr/share:$SNAP/gpu-2404/usr/share:/usr/share
     plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
 
   object-counter:
@@ -292,7 +295,6 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-      GDK_PIXBUF_MODULE_FILE: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
-      GDK_PIXBUF_MODULEDIR: $SNAP/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+      XDG_DATA_DIRS: $SNAP/usr/share:$SNAP/gpu-2404/usr/share:/usr/share
     plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
 
