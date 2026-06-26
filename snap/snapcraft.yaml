@@ -60,21 +60,16 @@ parts:
     source-type: git
     override-build: |
       set -eux
-      ls -l $CRAFT_PART_SRC
       mkdir -p "$CRAFT_PART_INSTALL/usr/local/tvm"
       cp -a $CRAFT_PART_SRC/tvm $CRAFT_PART_INSTALL/usr/local/tvm/
-      
-      # Follow Renesas Dockerfile setup   
+      # Follow Renesas Dockerfile setup
       cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
-      
-      # Copy to TVM folder to match with CMakefiles  
+      # Copy to TVM folder to match with CMakefiles
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
       cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
-
-      # Workaround without the libc header from kernel 
+      # Workaround without the libc header from kernel
       mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
       cp ${CRAFT_PROJECT_DIR}/drpai.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
-
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/usr/lib/
@@ -89,12 +84,7 @@ parts:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
-    source-tag: v6.20
-    override-pull: |
-      craftctl default
-      # Patch CMakefiles for correct TVM run time library and add install support
-      git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
-      git apply -v ${CRAFT_PROJECT_DIR}/cam_gst.patch
+    source-tag: v7.10
     build-packages:
       - cmake
       - ninja-build
@@ -150,6 +140,8 @@ parts:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
+      # Patch CMakefile for correct TVM run time library and add install support
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/apps/q01/cmake.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
@@ -170,6 +162,8 @@ parts:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
+      # Patch CMakefile for correct TVM run time library and add install support
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/apps/q08/cmake.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
@@ -190,6 +184,8 @@ parts:
       - PRODUCT: V2L
       - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
     override-build: |
+      # Patch CMakefile for correct TVM run time library and add install support
+      git -C $CRAFT_PART_SRC/ apply -v -p3 ${CRAFT_PROJECT_DIR}/patches/apps/r01/cmake.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
