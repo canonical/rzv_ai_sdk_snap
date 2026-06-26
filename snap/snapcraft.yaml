@@ -1,24 +1,40 @@
 name: rzv-ai-sdk-collection
 base: core24
-version: '1.0'
+version: '2.0'
 summary: Renesas RZ/V AI SDK Examples (V2L, cross-compiled)
 description: |
   Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2L.
   TVM runtime is staged from renesas-rz/rzv_drp-ai_tvm.
 
-grade: devel
-confinement: devmode
+compression: lzo
+
+grade: stable
+confinement: strict
 
 platforms:
   arm64:
     build-on: [amd64,arm64]
     build-for: [arm64]
 
+slots:
+  drp-ai-slot:
+    interface: custom-device
+    custom-device: drp-ai-device
+    devices:
+      - /dev/drpai0
+      - /dev/udmabuf
+      - /dev/udmabuf0
+      - /dev/rgnmm
+      - /dev/rgnmmbuf
+
 plugs:
   gpu-2404:
     interface: content
     target: $SNAP/gpu-2404
     default-provider: mesa-2404
+  drp-ai-plug:
+    interface: custom-device
+    custom-device: drp-ai-device
 
 package-repositories:
   - type: apt
@@ -206,7 +222,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
 
   object-counter:
     command-chain:
@@ -220,7 +236,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
 
   object-detection:
     command-chain:
@@ -234,4 +250,4 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
