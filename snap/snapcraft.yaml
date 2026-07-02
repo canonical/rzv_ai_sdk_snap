@@ -1,24 +1,40 @@
 name: rzv-ai-sdk-collection
 base: core24
-version: '1.0'
+version: '2.0'
 summary: Renesas RZ/V AI SDK Examples (V2L, cross-compiled)
 description: |
   Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2L.
   TVM runtime is staged from renesas-rz/rzv_drp-ai_tvm.
 
-grade: devel
-confinement: devmode
+compression: lzo
+
+grade: stable
+confinement: strict
 
 platforms:
   arm64:
     build-on: [amd64,arm64]
     build-for: [arm64]
 
+slots:
+  drp-ai-slot:
+    interface: custom-device
+    custom-device: drp-ai-device
+    devices:
+      - /dev/drpai0
+      - /dev/udmabuf
+      - /dev/udmabuf0
+      - /dev/rgnmm
+      - /dev/rgnmmbuf
+
 plugs:
   gpu-2404:
     interface: content
     target: $SNAP/gpu-2404
     default-provider: mesa-2404
+  drp-ai-plug:
+    interface: custom-device
+    custom-device: drp-ai-device
 
 package-repositories:
   - type: apt
@@ -42,29 +58,25 @@ parts:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_drp-ai_tvm.git
     source-type: git
+    source-tag: v2.6.1
+    source-depth: 1
     override-build: |
       set -eux
-      ls -l $CRAFT_PART_SRC
-      mkdir -p "$CRAFT_PART_INSTALL/usr/local/tvm"
-      cp -a $CRAFT_PART_SRC/tvm $CRAFT_PART_INSTALL/usr/local/tvm/
-      
-      # Follow Renesas Dockerfile setup   
-      cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/tvm/runtime
-      
-      # Copy to TVM folder to match with CMakefiles  
-      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
-      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PART_INSTALL/usr/local/tvm/obj/build_runtime/v2m/lib/
-
-      # Workaround without the libc header from kernel 
-      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
-      cp ${CRAFT_PROJECT_DIR}/drpai.h $CRAFT_PART_INSTALL/usr/local/tvm/tvm/include/linux
-
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm
+      cp -a $CRAFT_PART_SRC/tvm/* $CRAFT_PART_INSTALL/usr/local/tvm/
+      # Follow Renesas Dockerfile setup
+      cp -a $CRAFT_PART_SRC/setup/include/*.h $CRAFT_PART_INSTALL/usr/local/tvm/include/tvm/runtime
+      # Copy to TVM folder to match with CMakefiles
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/build_runtime/
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/V2L/* $CRAFT_PART_INSTALL/usr/local/tvm/build_runtime/
+      # Workaround without the libc header from kernel
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/tvm/include/linux
+      cp ${CRAFT_PROJECT_DIR}/drpai.h $CRAFT_PART_INSTALL/usr/local/tvm/include/linux
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/usr/lib/
       # Install runtime library
-      cp -a $CRAFT_PART_SRC/obj/build_runtime/v2m/lib/* $CRAFT_PRIME/usr/lib/
-
+      cp -a $CRAFT_PART_SRC/obj/build_runtime/V2L/* $CRAFT_PRIME/usr/lib/
       # Remove TVM
       rm -rf $CRAFT_PRIME/usr/local/tvm/
 
@@ -73,12 +85,8 @@ parts:
     plugin: nil
     source: https://github.com/renesas-rz/rzv_ai_sdk.git
     source-type: git
-    source-tag: v6.20
-    override-pull: |
-      craftctl default
-      # Patch CMakefiles for correct TVM run time library and add install support
-      git apply -v ${CRAFT_PROJECT_DIR}/cmake.patch
-      git apply -v ${CRAFT_PROJECT_DIR}/cam_gst.patch
+    source-tag: v7.10
+    source-depth: 1
     build-packages:
       - cmake
       - ninja-build
@@ -132,8 +140,12 @@ parts:
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm
     override-build: |
+      # We need to add this because cmake plugin by default does: cmake --build . --target install
+      sed -i "\$a install(TARGETS object_tracker RUNTIME)" $CRAFT_PART_SRC/CMakeLists.txt
+      # patch the application for gstreamer pipeline config
+      git -C $CRAFT_PART_SRC/ apply -v -p3 $CRAFT_PROJECT_DIR/patches/apps/q01.patch
       mkdir -p $CRAFT_PART_INSTALL/usr/q01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q01_footfall_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q01/bin/
       craftctl default
@@ -152,8 +164,26 @@ parts:
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm
+    build-packages:
+      - libmmngr-dev:$CRAFT_ARCH_BUILD_FOR
+      - libmmngrbuf-dev:$CRAFT_ARCH_BUILD_FOR
+      - wayland-protocols
+      - libwayland-bin  # provides wayland-scanner
     override-build: |
+      # We need to add this because cmake plugin by default does: cmake --build . --target install
+      sed -i "\$a install(TARGETS object_counter RUNTIME)" $CRAFT_PART_SRC/CMakeLists.txt
+      # patch the application for gstreamer pipeline config
+      git -C $CRAFT_PART_SRC/ apply -v -p3 $CRAFT_PROJECT_DIR/patches/apps/q08.patch
+      # Generate the source file where the CMakeLists.txt expects it
+      mkdir -p /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/
+      wayland-scanner private-code \
+        /usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml \
+        /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/xdg-shell-client-protocol.c
+      # Generate the header
+      wayland-scanner client-header \
+        /usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml \
+        /usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/xdg-shell-client-protocol.h
       mkdir -p $CRAFT_PART_INSTALL/usr/q08/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/Q08_object_counter/exe_v2l/* $CRAFT_PART_INSTALL/usr/q08/bin/
       craftctl default
@@ -172,8 +202,14 @@ parts:
       - -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     build-environment:
       - PRODUCT: V2L
-      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm/tvm
+      - TVM_HOME: $CRAFT_STAGE/usr/local/tvm
     override-build: |
+      # We need to add this because cmake plugin by default does: cmake --build . --target install
+      sed -i "\$a install(TARGETS object_detection RUNTIME)" $CRAFT_PART_SRC/CMakeLists.txt
+      # patch the application for gstreamer pipeline config
+      git -C $CRAFT_PART_SRC/ apply -v -p3 $CRAFT_PROJECT_DIR/patches/apps/r01.patch
+      # TODO: fix this with proper headers
+      cp ${CRAFT_PROJECT_DIR}/mmngr_public_cmn.h /usr/include/
       mkdir -p $CRAFT_PART_INSTALL/usr/r01/bin/
       cp -a ${CRAFT_PROJECT_DIR}/../parts/rz-ai-sdk-src/src/R01_object_detection/exe_v2l/* $CRAFT_PART_INSTALL/usr/r01/bin/
       craftctl default
@@ -206,7 +242,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
 
   object-counter:
     command-chain:
@@ -220,7 +256,7 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
 
   object-detection:
     command-chain:
@@ -234,4 +270,4 @@ apps:
       QT_QPA_PLATFORM_PLUGIN_PATH: $SNAP/gpu-2404/lib/qt5/plugins
       XKB_CONFIG_ROOT: $SNAP/gpu-2404-2/share/X11/xkb
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gpu-2404-2/share/glvnd/egl_vendor.d
-    plugs: [camera, opengl, wayland, hardware-observe, gpu-2404]
+    plugs: [camera, media-control, opengl, wayland, hardware-observe, gpu-2404, drp-ai-plug]
