@@ -11,6 +11,7 @@ examples as a [snap](https://snapcraft.io/). The snap is compiled/cross-compiled
 `arm64` (AArch64) and targets devices running Ubuntu on the Renesas RZ/V2L
 SoC. The DRP-AI TVM runtime is sourced from
 [renesas-rz/rzv_drp-ai_tvm](https://github.com/renesas-rz/rzv_drp-ai_tvm).
+The snap uses DRP-AI TVM v2.6.1 and AI SDK version 7.10.
 
 ## Included Applications
 
@@ -23,7 +24,7 @@ SoC. The DRP-AI TVM runtime is sourced from
 ## Requirements
 
 - Renesas RZ/V2L board running Ubuntu (noble / 24.04)
-- Camera connected to the board
+- MIPI Camera (OV5645) connected to the board
 
 ## Building
 
@@ -34,7 +35,7 @@ and compiled/cross-compiled from an `amd64` or `arm64` host:
 snapcraft pack
 ```
 
-> **Note:** The snap is currently set to `grade: devel` and `confinement: devmode`.
+> **Note:** The snap is currently set to `grade: stable` and `confinement: strict`. The compression is set to lzo for faster launch time.
 
 ## Running the AI Snap Demo
 
@@ -67,7 +68,7 @@ $ sudo snap install --devmode rz-gpu-snap-core24 --channel=beta
 Then, install the AI SDK collection snap:
 
 ```bash
-$ sudo snap install --devmode rzv-ai-sdk-collection_1.0_arm64.snap
+$ sudo snap install --danegerous rzv-ai-sdk-collection_2.0_arm64.snap
 ```
 
 ### Step 3: Connect Interfaces
@@ -77,6 +78,11 @@ Create a connection between the Ubuntu Frame, the newly installed AI snap, and t
 ```bash
 $ sudo snap connect ubuntu-frame:gpu-2404 rz-gpu-snap-core24
 $ sudo snap connect rzv-ai-sdk-collection:gpu-2404 rz-gpu-snap-core24
+$ sudo snap connect rzv-ai-sdk-collection:camera :camera
+$ sudo snap connect rzv-ai-sdk-collection:media-control :media-control
+$ sudo snap connect rzv-ai-sdk-collection:wayland :wayland
+$ sudo snap connect rzv-ai-sdk-collection:hardware-observe :hardware-observe
+$ sudo snap connect rzv-ai-sdk-collection:drp-ai-plug rzv-ai-sdk-collection:drp-ai-slot
 ```
 
 ## Installation
@@ -84,7 +90,7 @@ $ sudo snap connect rzv-ai-sdk-collection:gpu-2404 rz-gpu-snap-core24
 Install the locally built snap with:
 
 ```bash
-sudo snap install --devmode rzv-ai-sdk-collection_1.0_arm64.snap
+sudo snap install --dangerous rzv-ai-sdk-collection_2.0_arm64.snap
 ```
 
 ## Usage
