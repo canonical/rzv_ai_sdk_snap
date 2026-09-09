@@ -1,6 +1,6 @@
 name: rzv-ai-sdk-collection
 base: core24
-version: '2.0'
+version: '1.1'
 summary: Renesas RZ/V AI SDK Examples (V2L, cross-compiled)
 description: |
   Selected AI examples from renesas-rz/rzv_ai_sdk, built for PRODUCT=V2L.
@@ -8,8 +8,8 @@ description: |
 
 compression: lzo
 
-grade: stable
-confinement: strict
+grade: devel
+confinement: devmode
 
 platforms:
   arm64:
