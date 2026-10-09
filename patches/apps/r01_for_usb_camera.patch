@@ -1,0 +1,19 @@
+diff --git a/R01_object_detection/src/main.cpp b/R01_object_detection/src/main.cpp
+index 5b30bfb..8784178 100755
+--- a/R01_object_detection/src/main.cpp
++++ b/R01_object_detection/src/main.cpp
+@@ -1368,11 +1368,11 @@ int32_t main(int32_t argc, char * argv[])
+     
+     std::string media_port = query_device_status("usb");
+     #else /* for V2L */
+-    std::string media_port = query_device_status("RZG2L_CRU");
++    std::string media_port = query_device_status("usb");
+     /* MIPI Camera Setup */
+-    mipi_cam_init();
++    // mipi_cam_init();
+     #endif
+-    gstreamer_pipeline = "v4l2src device=" + media_port +" io-mode=dmabuf ! video/x-raw, width="+std::to_string(CAM_IMAGE_WIDTH)+", height="+std::to_string(CAM_IMAGE_HEIGHT)+" ,framerate=30/1 ! videoconvert ! appsink -v";
++    gstreamer_pipeline = "v4l2src device=" + media_port + " ! videoconvert ! appsink";
+ 
+     printf("RZ/V AI SDK Sample Application\n");
+     printf("Model : Darknet YOLOv3 | %s\n", model_dir.c_str());

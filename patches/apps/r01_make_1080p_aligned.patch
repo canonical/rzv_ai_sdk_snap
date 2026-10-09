@@ -1,0 +1,28 @@
+diff --git a/R01_object_detection/src/define.h b/R01_object_detection/src/define.h
+index 87c1cdd..f5603fc 100755
+--- a/R01_object_detection/src/define.h
++++ b/R01_object_detection/src/define.h
+@@ -133,17 +133,17 @@ static std::vector<std::string> label_file_map = {};
+ #define INPUT_CAM_NAME              "MIPI Camera"
+ 
+ /*Wayland Display Image Information*/
+-#define IMAGE_OUTPUT_WIDTH          (1280)
+-#define IMAGE_OUTPUT_HEIGHT         (720)
++#define IMAGE_OUTPUT_WIDTH          (1920)
++#define IMAGE_OUTPUT_HEIGHT         (1080)
+ 
+ /*Image:: Text information to be drawn on image*/
+-#define CHAR_SCALE_LARGE            (0.7)
+-#define CHAR_SCALE_SMALL            (0.6)
+-#define CHAR_SCALE_VERY_SMALL       (0.43)
++#define CHAR_SCALE_LARGE            (1.0)
++#define CHAR_SCALE_SMALL            (0.9)
++#define CHAR_SCALE_VERY_SMALL       (0.6)
+ #endif  /* V2H */
+ /*RESIZE_SCALE=((OUTPUT_WIDTH/IMAGE_WIDTH > OUTPUT_HEIGHT/IMAGE_HEIGHT) ?
+         OUTPUT_HEIGHT/IMAGE_HEIGHT : OUTPUT_WIDTH/IMAGE_WIDTH)*/
+-#define RESIZE_SCALE                (1.5)
++#define RESIZE_SCALE                (2.25)
+ 
+ /* Number of class to be detected */
+ #define NUM_CLASS                   (80)
